@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>زر الإجابة</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<style>
+body {
+  text-align: center;
+  font-family: Arial;
+  margin-top: 100px;
+}
+button {
+  font-size: 22px;
+  padding: 20px 50px;
+}
+</style>
+</head>
+<body>
+
+<h1>اضغط للإجابة</h1>
+
+<input id="team" placeholder="اسم الفريق">
+<br><br>
+
+<button onclick="press()">اضغط</button>
+
+<p id="status"></p>
+
+<script>
+const firebaseConfig = {
+  apiKey: "API_KEY",
+  databaseURL: "DATABASE_URL"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const pressRef = db.ref("press");
+
+function press() {
+  const team = team.value.trim();
+  if (!team) return alert("اكتب اسم الفريق");
+
+  pressRef.transaction(current => {
+    if (current === null) {
+      return {
+        team: team,
+        time: Date.now()
+      };
+    }
+    return;
+  });
+
+  document.getElementById("status").innerText =
+    "تم تسجيل الضغط، انتظر قرار المقدم";
+}
+
+pressRef.on("value", snap => {
+  if (snap.exists()) {
+    document.getElementById("status").innerText =
+      "تم الضغط أولًا بواسطة فريق: " + snap.val().team;
+  }
+});
+</script>
+
+</body>
+</html>
