@@ -531,6 +531,16 @@ const arabicLetters = [
   'ن', 'ه', 'و', 'ي'
 ];
 
+// دالة لخلط الحروف
+function shuffleArray(array) {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+
 // إنشاء الخلايا
 for (let i = 0; i < 25; i++) {
   const cell = document.createElement("div");
@@ -640,21 +650,23 @@ function resetGame() {
       
       // إزالة جميع الألوان من الخلايا
       const cells = document.querySelectorAll(".cell");
-      cells.forEach(cell => {
+      
+      // خلط الحروف بشكل عشوائي
+      const shuffledLetters = shuffleArray(arabicLetters);
+      
+      // تحديث الحروف في الخلايا
+      cells.forEach((cell, index) => {
         cell.classList.remove('orange', 'green', 'selected');
+        const cellText = cell.querySelector('.cell-text');
+        cellText.textContent = shuffledLetters[index] || '';
       });
 
       // تحديث عرض أول ضغطة
       const pressedDiv = document.getElementById("pressed");
       pressedDiv.innerHTML = '<span>🕐 في انتظار أول ضغطة...</span>';
 
-      // إظهار رسالة تأكيد ثم إعادة تحميل الصفحة
-      showAlert('✅ تم إعادة ترتيب اللعبة بنجاح!');
-      
-      // إعادة تحميل الصفحة بعد ثانية
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
+      // إظهار رسالة تأكيد
+      showAlert('✅ تم إعادة ترتيب اللعبة وتغيير الحروف بنجاح!');
     });
   }).catch(error => {
     showAlert('❌ حدث خطأ أثناء إعادة الترتيب: ' + error.message);
