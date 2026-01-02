@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>لوحة الخلايا</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(5, 60px);
+  gap: 5px;
+  justify-content: center;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  background: #ddd;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.orange { background: orange; }
+.green { background: #4CAF50; }
+</style>
+</head>
+<body>
+
+<h1>لوحة المقدم</h1>
+
+<p id="pressed"></p>
+
+<div id="grid"></div>
+
+<button onclick="assign('orange')">🟠 الفريق البرتقالي</button>
+<button onclick="assign('green')">🟢 الفريق الأخضر</button>
+
+<script>
+const firebaseConfig = {
+  apiKey: "API_KEY",
+  databaseURL: "DATABASE_URL"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const pressRef = db.ref("press");
+const gridRef = db.ref("grid");
+
+let selectedCell = null;
+
+// شبكة الخلايا
+const grid = document.getElementById("grid");
+for (let i = 0; i < 25; i++) {
+  const d = document.createElement("div");
+  d.className = "cell";
+  d.onclick = () => selectedCell = i;
+  grid.appendChild(d);
+}
+
+// عرض أول ضغطة
+pressRef.on("value", snap => {
+  if (snap.exists()) {
+    document.getElementById("pressed").innerText =
+      "أول ضغطة: " + snap.val().team;
+  }
+});
+
+// اختيار الفريق وتلوين الخلية
+function assign(team) {
+  if (selectedCell === null) return alert("اختر خلية");
+
+  gridRef.child(selectedCell).transaction(c => {
+    if (c === null) return team;
+    return;
+  });
+
+  pressRef.remove(); // إعادة الزر للجولة القادمة
+  selectedCell = null;
+}
+
+// تحديث مباشر للشبكة
+gridRef.on("value", snap => {
+  const cells = document.querySelectorAll(".cell");
+  cells.forEach(c => c.className = "cell");
+
+  snap.forEach(child => {
+    cells[child.key].classList.add(child.val());
+  });
+});
+</script>
+
+</body>
+</html>
