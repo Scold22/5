@@ -26,7 +26,7 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Arabic Typesetting', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, var(--dark) 0%, #1a2332 100%);
   color: var(--text);
   min-height: 100vh;
@@ -35,6 +35,7 @@ body {
   align-items: center;
   padding: 20px;
   overflow-x: hidden;
+  direction: rtl;
 }
 
 .container {
@@ -42,7 +43,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 24px;
   padding: 40px;
-  max-width: 600px;
+  max-width: 700px;
   width: 100%;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5),
               inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -144,12 +145,62 @@ h1 {
   }
 }
 
+/* الحدود الملونة */
+.game-wrapper {
+  position: relative;
+  animation: fadeIn 0.8s ease-out 0.4s both;
+  margin-bottom: 30px;
+}
+
+/* الحد الأخضر العلوي */
+.border-top {
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 50%, var(--green) 100%);
+  border-radius: 4px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 20px var(--green), inset 0 0 10px rgba(46, 204, 113, 0.3);
+}
+
+/* الحد الأخضر السفلي */
+.border-bottom {
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 50%, var(--green) 100%);
+  border-radius: 4px;
+  margin-top: 15px;
+  box-shadow: 0 0 20px var(--green), inset 0 0 10px rgba(46, 204, 113, 0.3);
+}
+
+/* الحد البرتقالي الأيمن */
+.border-right {
+  position: absolute;
+  right: -15px;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--orange) 0%, var(--orange-light) 50%, var(--orange) 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 20px var(--orange), inset 0 0 10px rgba(255, 107, 53, 0.3);
+}
+
+/* الحد البرتقالي الأيسر */
+.border-left {
+  position: absolute;
+  left: -15px;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--orange) 0%, var(--orange-light) 50%, var(--orange) 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 20px var(--orange), inset 0 0 10px rgba(255, 107, 53, 0.3);
+}
+
 #grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 12px;
-  margin-bottom: 30px;
-  animation: fadeIn 0.8s ease-out 0.4s both;
+  position: relative;
 }
 
 .cell {
@@ -165,7 +216,9 @@ h1 {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1.5em;
+  font-size: 3em;
+  min-height: 80px;
+  direction: ltr;
 }
 
 .cell::before {
@@ -200,7 +253,7 @@ h1 {
   border-color: var(--orange);
   box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
   color: white;
-  font-size: 1.8em;
+  font-size: 3em;
 }
 
 .cell.green {
@@ -208,7 +261,7 @@ h1 {
   border-color: var(--green);
   box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
   color: white;
-  font-size: 1.8em;
+  font-size: 3em;
 }
 
 .cell.orange::after,
@@ -218,6 +271,13 @@ h1 {
   inset: 0;
   background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), transparent);
   pointer-events: none;
+}
+
+.cell-text {
+  position: relative;
+  z-index: 1;
+  line-height: 1;
+  font-family: 'Arial Unicode MS', 'Arabic Typesetting', sans-serif;
 }
 
 .controls {
@@ -307,6 +367,7 @@ button:hover::before {
 @media (max-width: 480px) {
   .container {
     padding: 24px;
+    max-width: 95vw;
   }
 
   h1 {
@@ -319,7 +380,8 @@ button:hover::before {
 
   .cell {
     border-radius: 8px;
-    font-size: 1.2em;
+    font-size: 2.2em;
+    min-height: 70px;
   }
 
   .controls {
@@ -329,6 +391,21 @@ button:hover::before {
   button {
     padding: 12px 16px;
     font-size: 0.9em;
+  }
+
+  .border-right,
+  .border-left {
+    right: auto;
+    left: auto;
+    width: 6px;
+  }
+
+  .border-right {
+    right: -10px;
+  }
+
+  .border-left {
+    left: -10px;
   }
 }
 </style>
@@ -348,14 +425,22 @@ button:hover::before {
     </div>
   </div>
 
-  <div id="grid"></div>
+  <div class="game-wrapper">
+    <div class="border-top"></div>
+    <div style="position: relative;">
+      <div class="border-left"></div>
+      <div class="border-right"></div>
+      <div id="grid"></div>
+    </div>
+    <div class="border-bottom"></div>
+  </div>
 
   <div class="controls">
     <button class="btn-orange" onclick="assign('orange')">
-      🟠 الفريق البرتقالي
+      🟠 برتقالي
     </button>
     <button class="btn-green" onclick="assign('green')">
-      🟢 الفريق الأخضر
+      🟢 أخضر
     </button>
   </div>
 
@@ -367,7 +452,7 @@ button:hover::before {
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyA3Pog16W40VMOIdX38k_32HD3KsfEjNzM",
-  databaseURL: "https://hroof-1cd03-default-rtdb.firebaseio.com/"
+  databaseURL: "https://hroof-1cd03-default-rtdb.firebaseio.com"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -378,11 +463,23 @@ const gridRef = db.ref("grid");
 let selectedCell = null;
 const grid = document.getElementById("grid");
 
+// الحروف العربية
+const arabicLetters = ['أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي'];
+
 // إنشاء الخلايا
-for (let i = 0; i < 25; i++) {
+for (let i = 0; i < 28; i++) {
   const cell = document.createElement("div");
   cell.className = "cell";
   cell.dataset.index = i;
+  
+  const cellText = document.createElement("span");
+  cellText.className = "cell-text";
+  cellText.textContent = arabicLetters[i];
+  cellText.style.fontSize = "2.8em";
+  cellText.style.fontWeight = "bold";
+  cellText.style.fontFamily = "'Arabic Typesetting', 'Arial Unicode MS', sans-serif";
+  
+  cell.appendChild(cellText);
   cell.onclick = () => selectCell(i, cell);
   grid.appendChild(cell);
 }
@@ -446,7 +543,6 @@ gridRef.on("value", snap => {
   const cells = document.querySelectorAll(".cell");
   cells.forEach(c => {
     c.classList.remove('orange', 'green');
-    c.textContent = '';
   });
 
   if (snap.exists()) {
@@ -455,7 +551,6 @@ gridRef.on("value", snap => {
       const cellElement = cells[parseInt(child.key)];
       if (cellElement) {
         cellElement.classList.add(team);
-        cellElement.textContent = team === 'orange' ? '🟠' : '🟢';
       }
     });
   }
