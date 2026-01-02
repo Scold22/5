@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚡ لعبة الخلايا الملحمية</title>
+<title>⚡ لعبة الحروف العربية</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -26,7 +28,7 @@
 }
 
 body {
-  font-family: 'Arabic Typesetting', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Cairo', 'Arabic Typesetting', sans-serif;
   background: linear-gradient(135deg, var(--dark) 0%, #1a2332 100%);
   color: var(--text);
   min-height: 100vh;
@@ -43,7 +45,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 24px;
   padding: 40px;
-  max-width: 700px;
+  max-width: 800px;
   width: 100%;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5),
               inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -155,51 +157,51 @@ h1 {
 /* الحد الأخضر العلوي */
 .border-top {
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 50%, var(--green) 100%);
-  border-radius: 4px;
-  margin-bottom: 15px;
-  box-shadow: 0 0 20px var(--green), inset 0 0 10px rgba(46, 204, 113, 0.3);
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 25px var(--green), inset 0 0 10px rgba(46, 204, 113, 0.5);
 }
 
 /* الحد الأخضر السفلي */
 .border-bottom {
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 50%, var(--green) 100%);
-  border-radius: 4px;
-  margin-top: 15px;
-  box-shadow: 0 0 20px var(--green), inset 0 0 10px rgba(46, 204, 113, 0.3);
+  border-radius: 5px;
+  margin-top: 20px;
+  box-shadow: 0 0 25px var(--green), inset 0 0 10px rgba(46, 204, 113, 0.5);
 }
 
 /* الحد البرتقالي الأيمن */
 .border-right {
   position: absolute;
-  right: -15px;
+  right: -18px;
   top: 0;
-  width: 8px;
+  width: 10px;
   height: 100%;
   background: linear-gradient(180deg, var(--orange) 0%, var(--orange-light) 50%, var(--orange) 100%);
-  border-radius: 4px;
-  box-shadow: 0 0 20px var(--orange), inset 0 0 10px rgba(255, 107, 53, 0.3);
+  border-radius: 5px;
+  box-shadow: 0 0 25px var(--orange), inset 0 0 10px rgba(255, 107, 53, 0.5);
 }
 
 /* الحد البرتقالي الأيسر */
 .border-left {
   position: absolute;
-  left: -15px;
+  left: -18px;
   top: 0;
-  width: 8px;
+  width: 10px;
   height: 100%;
   background: linear-gradient(180deg, var(--orange) 0%, var(--orange-light) 50%, var(--orange) 100%);
-  border-radius: 4px;
-  box-shadow: 0 0 20px var(--orange), inset 0 0 10px rgba(255, 107, 53, 0.3);
+  border-radius: 5px;
+  box-shadow: 0 0 25px var(--orange), inset 0 0 10px rgba(255, 107, 53, 0.5);
 }
 
 #grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  gap: 15px;
   position: relative;
 }
 
@@ -207,8 +209,8 @@ h1 {
   aspect-ratio: 1;
   background: linear-gradient(135deg, #2a3344 0%, #1a2332 100%);
   cursor: pointer;
-  border-radius: 12px;
-  border: 2px solid var(--border);
+  border-radius: 14px;
+  border: 3px solid var(--border);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
@@ -216,8 +218,7 @@ h1 {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 3em;
-  min-height: 80px;
+  min-height: 100px;
   direction: ltr;
 }
 
@@ -244,24 +245,25 @@ h1 {
 
 .cell.selected:not(.orange):not(.green) {
   border-color: #FFD700;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  border-width: 3px;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.5), inset 0 0 10px rgba(255, 215, 0, 0.2);
   transform: scale(1.05);
 }
 
 .cell.orange {
   background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
   border-color: var(--orange);
-  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+  border-width: 3px;
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
   color: white;
-  font-size: 3em;
 }
 
 .cell.green {
   background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
   border-color: var(--green);
-  box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+  border-width: 3px;
+  box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
   color: white;
-  font-size: 3em;
 }
 
 .cell.orange::after,
@@ -277,7 +279,10 @@ h1 {
   position: relative;
   z-index: 1;
   line-height: 1;
-  font-family: 'Arial Unicode MS', 'Arabic Typesetting', sans-serif;
+  font-family: 'Cairo', 'Arial Unicode MS', sans-serif;
+  font-weight: 700;
+  text-align: center;
+  word-break: break-all;
 }
 
 .controls {
@@ -292,7 +297,7 @@ button {
   padding: 14px 20px;
   border: none;
   border-radius: 12px;
-  font-size: 1em;
+  font-size: 1.05em;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -300,6 +305,7 @@ button {
   letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
+  family: 'Cairo', sans-serif;
 }
 
 button::before {
@@ -375,13 +381,12 @@ button:hover::before {
   }
 
   #grid {
-    gap: 10px;
+    gap: 12px;
   }
 
   .cell {
-    border-radius: 8px;
-    font-size: 2.2em;
-    min-height: 70px;
+    border-radius: 10px;
+    min-height: 85px;
   }
 
   .controls {
@@ -397,15 +402,15 @@ button:hover::before {
   .border-left {
     right: auto;
     left: auto;
-    width: 6px;
+    width: 8px;
   }
 
   .border-right {
-    right: -10px;
+    right: -12px;
   }
 
   .border-left {
-    left: -10px;
+    left: -12px;
   }
 }
 </style>
@@ -414,7 +419,7 @@ button:hover::before {
 
 <div class="container">
   <header>
-    <h1>⚡ لعبة الخلايا</h1>
+    <h1>⚡ لعبة الحروف العربية</h1>
     <p class="subtitle">من يملك الشبكة أولاً؟</p>
   </header>
 
@@ -463,21 +468,23 @@ const gridRef = db.ref("grid");
 let selectedCell = null;
 const grid = document.getElementById("grid");
 
-// الحروف العربية
-const arabicLetters = ['أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي'];
+// جميع الحروف العربية الـ 28
+const arabicLetters = [
+  'ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 
+  'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 
+  'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 
+  'ن', 'ه', 'و', 'ي'
+];
 
 // إنشاء الخلايا
-for (let i = 0; i < 28; i++) {
+for (let i = 0; i < 25; i++) {
   const cell = document.createElement("div");
   cell.className = "cell";
   cell.dataset.index = i;
   
   const cellText = document.createElement("span");
   cellText.className = "cell-text";
-  cellText.textContent = arabicLetters[i];
-  cellText.style.fontSize = "2.8em";
-  cellText.style.fontWeight = "bold";
-  cellText.style.fontFamily = "'Arabic Typesetting', 'Arial Unicode MS', sans-serif";
+  cellText.textContent = arabicLetters[i] || '';
   
   cell.appendChild(cellText);
   cell.onclick = () => selectCell(i, cell);
