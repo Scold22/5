@@ -473,7 +473,7 @@ button:hover::before {
   </header>
 
   <div class="status-display">
-    <div class="status-label">🔥 أول ضغطة</div>
+    <div class="status-label">🔥 من ضغط الزر أولاً</div>
     <div class="status-text" id="pressed">
       <span>في انتظار...</span>
     </div>
@@ -499,7 +499,7 @@ button:hover::before {
   </div>
 
   <div class="info">
-    ✨ اختر خلية ثم اضغط على الفريق لاحتلالها
+    ✨ اختر خلية ثم اضغط على الفريق لاحتلالها (الاسم يأتي من صفحة الإجابة)
   </div>
 
   <div class="reset-section">
@@ -571,12 +571,10 @@ function selectCell(index, element) {
 pressRef.on("value", snap => {
   const pressedDiv = document.getElementById("pressed");
   if (snap.exists()) {
-    const team = snap.val().team;
-    const emoji = team === 'orange' ? '🟠' : '🟢';
-    const teamName = team === 'orange' ? 'الفريق البرتقالي' : 'الفريق الأخضر';
+    const personName = snap.val().team;
     pressedDiv.innerHTML = `
-      <span class="team-badge ${team}"></span>
-      <span>${emoji} ${teamName}</span>
+      <span class="team-badge orange"></span>
+      <span>👤 ${personName}</span>
     `;
   } else {
     pressedDiv.innerHTML = '<span>🕐 في انتظار أول ضغطة...</span>';
@@ -595,12 +593,6 @@ function assign(team) {
       return team;
     }
     return; // الخلية مشغولة
-  });
-
-  // تسجيل أول ضغطة
-  pressRef.set({
-    team: team,
-    timestamp: new Date().getTime()
   });
 
   // إعادة التحديد
