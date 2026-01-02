@@ -413,6 +413,56 @@ button:hover::before {
   transform: translateY(0);
 }
 
+.btn-clear {
+  background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  family: 'Cairo', sans-serif;
+  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+  margin-right: 10px;
+}
+
+.btn-clear::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: left 0.3s ease;
+}
+
+.btn-clear:hover::before {
+  left: 100%;
+}
+
+.btn-clear:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(155, 89, 182, 0.4);
+}
+
+.btn-clear:active {
+  transform: translateY(0);
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .emoji {
   display: inline-block;
   margin-left: 8px;
@@ -503,9 +553,14 @@ button:hover::before {
   </div>
 
   <div class="reset-section">
-    <button class="btn-reset" onclick="resetGame()">
-      🔄 إعادة ترتيب اللعبة
-    </button>
+    <div class="button-container">
+      <button class="btn-clear" onclick="clearPressedPerson()">
+        🗑️ حذف من ضغط الزر
+      </button>
+      <button class="btn-reset" onclick="resetGame()">
+        🔄 إعادة ترتيب اللعبة
+      </button>
+    </div>
   </div>
 </div>
 
@@ -623,6 +678,43 @@ gridRef.on("value", snap => {
 // دالة تنبيه مخصصة
 function showAlert(message) {
   alert(message);
+}
+
+// دالة حذف من ضغط الزر مع حفظ الاسم في قاعدة البيانات
+function clearPressedPerson() {
+  // طلب تأكيد من المستخدم
+  const confirm = window.confirm('هل أنت متأكد من رغبتك في حذف من ضغط الزر؟\nسيتم حفظ الاسم في السجل والزر سيكون قابلاً للضغط مجدداً');
+  
+  if (!confirm) {
+    return;
+  }
+
+  // الحصول على اسم من ضغط الزر الحالي
+  pressRef.once('value').then(snap => {
+    if (snap.exists()) {
+      const personName = snap.val().team;
+      
+      // حفظ الاسم في سجل المحاولات
+      const historyRef = db.ref("press_history").push();
+      historyRef.set({
+        name: personName,
+        timestamp: new Date().getTime(),
+        action: 'cleared'
+      }).then(() => {
+        // حذف من ضغط الزر الحالي
+        pressRef.remove().then(() => {
+          // تحديث عرض أول ضغطة
+          const pressedDiv = document.getElementById("pressed");
+          pressedDiv.innerHTML = '<span>🕐 في انتظار أول ضغطة...</span>';
+          
+          // إظهار رسالة تأكيد
+          showAlert(`✅ تم حذف ${personName} من ضغط الزر!\nالاسم محفوظ في السجل.\nالزر الآن قابل للضغط مجدداً`);
+        });
+      });
+    } else {
+      showAlert('⚠️ لا يوجد أحد ضغط الزر حتى الآن');
+    }
+  });
 }
 
 // دالة إعادة ترتيب اللعبة
