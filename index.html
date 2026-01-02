@@ -1,67 +1,435 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>زر الإجابة</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ زر الإجابة السريعة</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
 <style>
-body {
-  text-align: center;
-  font-family: Arial;
-  margin-top: 100px;
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-button {
-  font-size: 22px;
-  padding: 20px 50px;
+
+:root {
+  --orange: #FF6B35;
+  --orange-light: #FFB84D;
+  --green: #2ECC71;
+  --green-light: #58D68D;
+  --dark: #0F1419;
+  --card-bg: #1a1f2e;
+  --border: #2a3344;
+  --text: #E8EAED;
+  --text-light: #9CA3AF;
+}
+
+body {
+  font-family: 'Cairo', 'Arabic Typesetting', sans-serif;
+  background: linear-gradient(135deg, var(--dark) 0%, #1a2332 100%);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  direction: rtl;
+}
+
+.container {
+  background: rgba(26, 31, 46, 0.95);
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  padding: 50px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  animation: slideIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+header {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+h1 {
+  font-size: 2.5em;
+  font-weight: 700;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: var(--text-light);
+  font-size: 1em;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.form-group {
+  margin-bottom: 30px;
+  animation: fadeIn 0.8s ease-out 0.3s both;
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--text);
+}
+
+#nameInput {
+  width: 100%;
+  padding: 18px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2a3344 0%, #1a2332 100%);
+  color: var(--text);
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.1em;
+  transition: all 0.3s ease;
+}
+
+#nameInput::placeholder {
+  color: var(--text-light);
+}
+
+#nameInput:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 25px rgba(255, 107, 53, 0.4);
+}
+
+.person-display {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(46, 204, 113, 0.15));
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 25px;
+  margin-bottom: 35px;
+  text-align: center;
+  animation: fadeIn 0.8s ease-out 0.4s both;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-display.active {
+  border-color: var(--orange);
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.25), rgba(255, 107, 53, 0.15));
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+}
+
+.person-name {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: var(--orange);
+}
+
+.person-label {
+  font-size: 0.95em;
+  color: var(--text-light);
+}
+
+.btn-press {
+  width: 100%;
+  padding: 25px 24px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
+  color: white;
+  font-size: 1.4em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Cairo', sans-serif;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+}
+
+.btn-press::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: left 0.3s ease;
+}
+
+.btn-press:hover::before {
+  left: 100%;
+}
+
+.btn-press:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(255, 107, 53, 0.5);
+}
+
+.btn-press:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-press:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.status-display {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(46, 204, 113, 0.1));
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 25px;
+  text-align: center;
+  animation: fadeIn 0.8s ease-out 0.5s both;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-text {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.success {
+  color: var(--green);
+  border-color: var(--green);
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.25), rgba(46, 204, 113, 0.15));
+  box-shadow: 0 0 25px rgba(46, 204, 113, 0.3);
+}
+
+.error {
+  color: #E74C3C;
+  border-color: #E74C3C;
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.25), rgba(231, 76, 60, 0.15));
+  box-shadow: 0 0 25px rgba(231, 76, 60, 0.3);
+}
+
+.waiting {
+  color: var(--text-light);
+  border-color: var(--border);
+}
+
+.info {
+  font-size: 0.9em;
+  color: var(--text-light);
+  text-align: center;
+  margin-top: 20px;
+  animation: fadeIn 0.8s ease-out 0.6s both;
+  line-height: 1.6;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 30px;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .subtitle {
+    font-size: 0.9em;
+  }
+
+  .btn-press {
+    padding: 20px 20px;
+    font-size: 1.2em;
+  }
+
+  .person-name {
+    font-size: 1.5em;
+  }
+
+  .person-display {
+    padding: 20px;
+    min-height: 60px;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.btn-press.active {
+  animation: pulse 0.6s ease-in-out;
 }
 </style>
 </head>
 <body>
 
-<h1>اضغط للإجابة</h1>
+<div class="container">
+  <header>
+    <h1>⚡ اضغط الآن</h1>
+    <p class="subtitle">كن الأول في الإجابة</p>
+  </header>
 
-<input id="team" placeholder="اسم الفريق">
-<br><br>
+  <div class="form-group">
+    <label for="nameInput">👤 اسمك:</label>
+    <input 
+      type="text" 
+      id="nameInput" 
+      placeholder="اكتب اسمك..."
+      autocomplete="off"
+    >
+  </div>
 
-<button onclick="press()">اضغط</button>
+  <div class="person-display" id="personDisplay">
+    <span class="person-label">لم يتم إدخال اسم بعد</span>
+  </div>
 
-<p id="status"></p>
+  <button class="btn-press" id="pressBtn" onclick="press()" disabled>
+    🎯 اضغط الآن
+  </button>
+
+  <div class="status-display waiting" id="status">
+    <span class="status-text">أدخل اسمك واضغط الزر</span>
+  </div>
+
+  <div class="info">
+    ⚡ اضغط بسرعة لتكون الأول في الإجابة<br>
+    سيظهر اسمك في لوحة الخلايا
+  </div>
+</div>
 
 <script>
 const firebaseConfig = {
-  apiKey: "API_KEY",
-  databaseURL: "DATABASE_URL"
+  apiKey: "AIzaSyA3Pog16W40VMOIdX38k_32HD3KsfEjNzM",
+  databaseURL: "https://hroof-1cd03-default-rtdb.firebaseio.com"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const pressRef = db.ref("press");
 
+const nameInput = document.getElementById("nameInput");
+const personDisplay = document.getElementById("personDisplay");
+const pressBtn = document.getElementById("pressBtn");
+const statusDiv = document.getElementById("status");
+
+let currentName = null;
+
+// تحديث عرض الاسم
+function updatePersonDisplay() {
+  if (currentName && nameInput.value.trim()) {
+    personDisplay.innerHTML = `<span class="person-name">${nameInput.value.trim()}</span>`;
+    personDisplay.classList.add("active");
+    pressBtn.disabled = false;
+  } else {
+    personDisplay.innerHTML = '<span class="person-label">لم يتم إدخال اسم بعد</span>';
+    personDisplay.classList.remove("active");
+    pressBtn.disabled = true;
+  }
+}
+
+// مراقبة التغييرات في input
+nameInput.addEventListener("input", () => {
+  currentName = nameInput.value.trim();
+  updatePersonDisplay();
+});
+
+// عرض الحالة
+function showStatus(message, type = "waiting") {
+  statusDiv.innerHTML = `<span class="status-text">${message}</span>`;
+  statusDiv.classList.remove("success", "error", "waiting");
+  statusDiv.classList.add(type);
+}
+
+// الضغط على الزر
 function press() {
-  const team = team.value.trim();
-  if (!team) return alert("اكتب اسم الفريق");
+  const name = nameInput.value.trim();
+  
+  if (!name) {
+    showStatus("❌ أدخل اسمك أولاً!", "error");
+    return;
+  }
+
+  pressBtn.disabled = true;
+  pressBtn.classList.add("active");
 
   pressRef.transaction(current => {
     if (current === null) {
       return {
-        team: team,
+        team: name,
         time: Date.now()
       };
     }
-    return;
+    return; // تم الضغط من قبل
+  }).then(result => {
+    if (result.committed) {
+      showStatus(`🎉 تم تسجيل ضغطتك يا ${name}!`, "success");
+      nameInput.disabled = true;
+      pressBtn.disabled = true;
+    } else {
+      showStatus(`⚠️ عذراً! تم الضغط من قبل 👑`, "error");
+      setTimeout(() => {
+        pressBtn.disabled = false;
+        pressBtn.classList.remove("active");
+      }, 2000);
+    }
+  }).catch(error => {
+    showStatus("❌ حدث خطأ، حاول مجدداً", "error");
+    pressBtn.disabled = false;
+    pressBtn.classList.remove("active");
   });
-
-  document.getElementById("status").innerText =
-    "تم تسجيل الضغط، انتظر قرار المقدم";
 }
 
+// الاستماع إلى تحديثات الضغط
 pressRef.on("value", snap => {
   if (snap.exists()) {
-    document.getElementById("status").innerText =
-      "تم الضغط أولًا بواسطة فريق: " + snap.val().team;
+    const data = snap.val();
+    if (data.team !== nameInput.value.trim()) {
+      showStatus(`👑 الفائز: ${data.team}`, "success");
+    }
+  }
+});
+
+// السماح بالضغط بزر Enter
+nameInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter" && !pressBtn.disabled) {
+    press();
   }
 });
 </script>
